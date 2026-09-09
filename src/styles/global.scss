@@ -1,0 +1,93 @@
+:root {
+  --bg: #f4f6fb;
+  --bg-deep: #0b1020;
+  --surface: #ffffff;
+  --surface-muted: #f7f8fc;
+
+  --ink: #101828;
+  --ink-soft: #475467;
+  --ink-muted: #8a93a5;
+
+  --brand: #4f46e5;
+  --brand-dark: #3b32c7;
+  --brand-soft: #eef0ff;
+
+  --whatsapp: #25d366;
+  --whatsapp-dark: #1da851;
+  --chat-bg: #ece5dd;
+  --chat-bubble: #d9fdd3;
+
+  --danger: #d92d20;
+  --line: #e5e8f0;
+
+  --radius-sm: 10px;
+  --radius-md: 14px;
+  --radius-lg: 22px;
+  --radius-pill: 999px;
+
+  --shadow-card: 0 24px 60px rgba(16, 24, 40, 0.1);
+  --shadow-soft: 0 6px 18px rgba(16, 24, 40, 0.06);
+
+  --container: 1180px;
+
+  color-scheme: light;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+  font-size: 16px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3,
+p {
+  margin: 0;
+}
+
+button,
+input,
+select {
+  font: inherit;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+a {
+  color: var(--brand);
+}
+
+:focus-visible {
+  outline: 3px solid rgba(79, 70, 229, 0.35);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
