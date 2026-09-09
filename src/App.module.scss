@@ -16,8 +16,8 @@
     border-radius: 50%;
     background: radial-gradient(
       circle,
-      rgba(79, 70, 229, 0.18) 0%,
-      rgba(37, 211, 102, 0.1) 45%,
+      rgb(var(--brand-rgb) / 0.2) 0%,
+      rgb(var(--accent-rgb) / 0.16) 45%,
       transparent 70%
     );
     pointer-events: none;
@@ -60,7 +60,7 @@
     place-items: center;
     padding: 6px 10px;
     border-radius: var(--radius-sm);
-    background: linear-gradient(135deg, var(--brand) 0%, #8b5cf6 100%);
+    background: linear-gradient(135deg, var(--brand) 0%, var(--accent) 100%);
     color: #fff;
     font-size: 13px;
     letter-spacing: 0.04em;

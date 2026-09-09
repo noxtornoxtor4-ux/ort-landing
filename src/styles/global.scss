@@ -1,32 +1,39 @@
 :root {
-  --bg: #f4f6fb;
-  --bg-deep: #0b1020;
+  --bg: #fdf7ee;
   --surface: #ffffff;
-  --surface-muted: #f7f8fc;
+  --surface-muted: #fdf3e6;
 
-  --ink: #101828;
-  --ink-soft: #475467;
-  --ink-muted: #8a93a5;
+  --ink: #221310;
+  --ink-soft: #6b524a;
+  --ink-muted: #a08a7f;
 
-  --brand: #4f46e5;
-  --brand-dark: #3b32c7;
-  --brand-soft: #eef0ff;
+  /* Основной акцент — киноварь, дополнительный — тёплый янтарь. */
+  --brand: #e4572e;
+  --brand-rgb: 228 87 46;
+  --brand-dark: #c0401d;
+  --brand-soft: #fdeade;
 
-  --whatsapp: #25d366;
-  --whatsapp-dark: #1da851;
+  --accent: #f2a20c;
+  --accent-rgb: 242 162 12;
+  --accent-soft: #fff3d4;
+
+  /* Пузырёк превью повторяет настоящий WhatsApp, поэтому цвета здесь не из палитры. */
   --chat-bg: #ece5dd;
   --chat-bubble: #d9fdd3;
+  --chat-ink: #111b21;
+  --chat-tick: #53bdeb;
 
-  --danger: #d92d20;
-  --line: #e5e8f0;
+  /* Холоднее киновари, чтобы ошибка не сливалась с акцентом. */
+  --danger: #b3121b;
+  --line: #f1e0cb;
 
   --radius-sm: 10px;
   --radius-md: 14px;
   --radius-lg: 22px;
   --radius-pill: 999px;
 
-  --shadow-card: 0 24px 60px rgba(16, 24, 40, 0.1);
-  --shadow-soft: 0 6px 18px rgba(16, 24, 40, 0.06);
+  --shadow-card: 0 24px 60px rgba(94, 46, 20, 0.12);
+  --shadow-soft: 0 6px 18px rgba(94, 46, 20, 0.08);
 
   --container: 1180px;
 
@@ -74,7 +81,7 @@ a {
 }
 
 :focus-visible {
-  outline: 3px solid rgba(79, 70, 229, 0.35);
+  outline: 3px solid rgb(var(--brand-rgb) / 0.35);
   outline-offset: 2px;
 }
 
