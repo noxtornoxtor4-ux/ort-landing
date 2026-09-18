@@ -11,11 +11,13 @@ export interface EnrollRequest {
   name: string
   /** Готовая формулировка класса: «ученик 11 класса», «выпускник школы». */
   gradePhrase: string
+  format: string
   subjects: string[]
   /** День в человеческом виде: «14 сентября (понедельник)». */
   dateLabel: string
   time: string
   phoneDigits: string
+  parentPhoneDigits: string
 }
 
 /** Собирает текст заявки, который увидит администратор в WhatsApp. */
@@ -25,10 +27,12 @@ export const buildRequestText = (request: EnrollRequest): string =>
     'Хочу записаться на пробный урок по ОРТ.',
     '',
     '📌 Детали заявки:',
+    `• Формат: ${request.format}`,
     `• Предметы: ${request.subjects.join(', ')}`,
     `• Удобный день: ${request.dateLabel}`,
     `• Удобное время: ${request.time}`,
-    `• Телефон для связи: ${toInternational(request.phoneDigits)}`,
+    `• Телефон ученика: ${toInternational(request.phoneDigits)}`,
+    `• Телефон родителя: ${toInternational(request.parentPhoneDigits)}`,
     '',
     'Подскажите, пожалуйста, расписание и стоимость.',
   ].join('\n')
