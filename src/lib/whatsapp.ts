@@ -1,4 +1,4 @@
-import { WHATSAPP_PHONE } from '../config/site'
+import { CENTER, WHATSAPP_PHONE } from '../config/site'
 import { toInternational } from './phone'
 
 /**
@@ -13,9 +13,9 @@ export interface EnrollRequest {
   gradePhrase: string
   format: string
   subjects: string[]
-  /** День в человеческом виде: «14 сентября (понедельник)». */
+  /** День звонка в человеческом виде: «23 сентября (среда)». */
   dateLabel: string
-  time: string
+  callSlot: string
   phoneDigits: string
   parentPhoneDigits: string
 }
@@ -24,13 +24,12 @@ export interface EnrollRequest {
 export const buildRequestText = (request: EnrollRequest): string =>
   [
     `Здравствуйте! Меня зовут ${request.name}, я ${request.gradePhrase}.`,
-    'Хочу записаться на пробный урок по ОРТ.',
+    `Хочу записаться на пробный урок по ОРТ в ${CENTER.name}.`,
     '',
     '📌 Детали заявки:',
     `• Формат: ${request.format}`,
     `• Предметы: ${request.subjects.join(', ')}`,
-    `• Удобный день: ${request.dateLabel}`,
-    `• Удобное время: ${request.time}`,
+    `• Удобно позвонить: ${request.dateLabel}, ${request.callSlot}`,
     `• Телефон ученика: ${toInternational(request.phoneDigits)}`,
     `• Телефон родителя: ${toInternational(request.parentPhoneDigits)}`,
     '',

@@ -1,7 +1,13 @@
 import { useMemo, useRef, useState } from 'react'
 import type { ChangeEvent, FormEvent, MouseEvent, Ref } from 'react'
 
-import { BOOKING_HORIZON_DAYS, FORMATS, GRADES, SUBJECTS, TIME_SLOTS } from '../../config/site'
+import {
+  BOOKING_HORIZON_DAYS,
+  CALL_SLOTS,
+  FORMATS,
+  GRADES,
+  getSubjectsForFormat,
+} from '../../config/site'
 import { formatDateLabel, isoOffset } from '../../lib/date'
 import { formatPhone, isValidPhone, normalizePhone } from '../../lib/phone'
 import { buildRequestText, buildWhatsAppLink, type EnrollRequest } from '../../lib/whatsapp'
@@ -9,12 +15,8 @@ import { CheckIcon } from '../Icons/CheckIcon'
 import { WhatsAppIcon } from '../Icons/WhatsAppIcon'
 import styles from './EnrollForm.module.scss'
 
-type FieldName = 'date' | 'time' | 'name' | 'grade' | 'phone' | 'parentPhone'
+type FieldName = 'subjects' | 'date' | 'callSlot' | 'name' | 'grade' | 'phone' | 'parentPhone'
 type Errors = Partial<Record<FieldName, string>>
-
-const REQUIRED_SUBJECT_IDS = SUBJECTS.filter((subject) => subject.required).map(
-  (subject) => subject.id,
-)
 
 const cx = (...classNames: (string | false | undefined)[]) => classNames.filter(Boolean).join(' ')
 
@@ -29,7 +31,15 @@ interface PhoneFieldProps {
 }
 
 /** Поле кыргызского номера: фиксированный префикс +996 и маска 555 12 34 56. */
-const PhoneField = ({ label, name, digits, autoComplete, error, inputRef, onChange }: PhoneFieldProps) => (
+const PhoneField = ({
+  label,
+  name,
+  digits,
+  autoComplete,
+  error,
+  inputRef,
+  onChange,
+}: PhoneFieldProps) => (
   <label className={styles.field}>
     <span className={styles.fieldLabel}>{label}</span>
     <span className={styles.phone}>
@@ -57,9 +67,9 @@ const PhoneField = ({ label, name, digits, autoComplete, error, inputRef, onChan
 
 export const EnrollForm = () => {
   const [formatId, setFormatId] = useState(FORMATS[0].id)
+  const [subjectIds, setSubjectIds] = useState<string[]>([])
   const [date, setDate] = useState('')
-  const [time, setTime] = useState('')
-  const [subjectIds, setSubjectIds] = useState<string[]>(REQUIRED_SUBJECT_IDS)
+  const [callSlot, setCallSlot] = useState('')
   const [name, setName] = useState('')
   const [gradeId, setGradeId] = useState('')
   const [phoneDigits, setPhoneDigits] = useState('')
@@ -67,8 +77,9 @@ export const EnrollForm = () => {
   const [errors, setErrors] = useState<Errors>({})
   const [sentRequest, setSentRequest] = useState<EnrollRequest | null>(null)
 
+  const subjectsRef = useRef<HTMLDivElement>(null)
   const dateRef = useRef<HTMLInputElement>(null)
-  const timeRef = useRef<HTMLSelectElement>(null)
+  const callSlotRef = useRef<HTMLSelectElement>(null)
   const nameRef = useRef<HTMLInputElement>(null)
   const gradeRef = useRef<HTMLSelectElement>(null)
   const phoneRef = useRef<HTMLInputElement>(null)
@@ -78,10 +89,14 @@ export const EnrollForm = () => {
   const minDate = useMemo(() => isoOffset(0), [])
   const maxDate = useMemo(() => isoOffset(BOOKING_HORIZON_DAYS), [])
 
+  const availableSubjects = useMemo(() => getSubjectsForFormat(formatId), [formatId])
+
   const selectedSubjects = useMemo(
     () =>
-      SUBJECTS.filter((subject) => subjectIds.includes(subject.id)).map((subject) => subject.label),
-    [subjectIds],
+      availableSubjects
+        .filter((subject) => subjectIds.includes(subject.id))
+        .map((subject) => subject.label),
+    [availableSubjects, subjectIds],
   )
 
   const request = useMemo<EnrollRequest>(
@@ -91,11 +106,11 @@ export const EnrollForm = () => {
       format: FORMATS.find((item) => item.id === formatId)?.label ?? '',
       subjects: selectedSubjects,
       dateLabel: date ? formatDateLabel(date) : '',
-      time,
+      callSlot,
       phoneDigits,
       parentPhoneDigits,
     }),
-    [date, formatId, gradeId, name, parentPhoneDigits, phoneDigits, selectedSubjects, time],
+    [callSlot, date, formatId, gradeId, name, parentPhoneDigits, phoneDigits, selectedSubjects],
   )
 
   /** Ссылка пересобирается на каждое изменение формы, чтобы CTA оставался обычным <a href>. */
@@ -108,12 +123,13 @@ export const EnrollForm = () => {
         ...request,
         name: request.name || 'Эльдос',
         gradePhrase: request.gradePhrase || 'ученик 11 класса',
+        subjects: request.subjects.length ? request.subjects : [availableSubjects[0].label],
         dateLabel: request.dateLabel || formatDateLabel(minDate),
-        time: request.time || '15:00',
+        callSlot: request.callSlot || CALL_SLOTS[2],
         phoneDigits: request.phoneDigits || '555123456',
         parentPhoneDigits: request.parentPhoneDigits || '700123456',
       }),
-    [minDate, request],
+    [availableSubjects, minDate, request],
   )
 
   /**
@@ -125,19 +141,28 @@ export const EnrollForm = () => {
   const clearError = (field: FieldName) =>
     setErrors((current) => (current[field] ? { ...current, [field]: undefined } : current))
 
-  const toggleSubject = (id: string) =>
+  /** Наборы предметов у форматов не пересекаются, поэтому выбор сбрасывается. */
+  const handleFormatChange = (nextFormatId: string) => {
+    setFormatId(nextFormatId)
+    setSubjectIds([])
+    clearError('subjects')
+  }
+
+  const toggleSubject = (id: string) => {
     setSubjectIds((current) =>
       current.includes(id) ? current.filter((item) => item !== id) : [...current, id],
     )
+    clearError('subjects')
+  }
 
   const handleDateChange = (event: ChangeEvent<HTMLInputElement>) => {
     setDate(event.target.value)
     clearError('date')
   }
 
-  const handleTimeChange = (event: ChangeEvent<HTMLSelectElement>) => {
-    setTime(event.target.value)
-    clearError('time')
+  const handleCallSlotChange = (event: ChangeEvent<HTMLSelectElement>) => {
+    setCallSlot(event.target.value)
+    clearError('callSlot')
   }
 
   const handleNameChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -163,14 +188,18 @@ export const EnrollForm = () => {
   const validate = (): Errors => {
     const nextErrors: Errors = {}
 
+    if (selectedSubjects.length === 0) {
+      nextErrors.subjects = 'Выберите хотя бы один предмет'
+    }
+
     if (!date) {
-      nextErrors.date = 'Выберите удобный день'
+      nextErrors.date = 'Выберите день звонка'
     } else if (date < minDate) {
       nextErrors.date = 'Этот день уже прошёл'
     }
 
-    if (!time) {
-      nextErrors.time = 'Выберите удобное время'
+    if (!callSlot) {
+      nextErrors.callSlot = 'Выберите время звонка'
     }
 
     if (name.trim().length < 2) {
@@ -194,9 +223,15 @@ export const EnrollForm = () => {
 
   /** Возвращает курсор в первое незаполненное поле, чтобы ошибка не осталась за экраном. */
   const focusFirstError = (nextErrors: Errors) => {
+    if (nextErrors.subjects) {
+      subjectsRef.current?.scrollIntoView({ block: 'center' })
+      subjectsRef.current?.querySelector('input')?.focus()
+      return
+    }
+
     const order = [
       [nextErrors.date, dateRef],
-      [nextErrors.time, timeRef],
+      [nextErrors.callSlot, callSlotRef],
       [nextErrors.name, nameRef],
       [nextErrors.grade, gradeRef],
       [nextErrors.phone, phoneRef],
@@ -245,15 +280,15 @@ export const EnrollForm = () => {
       <div className={styles.head}>
         <h2 className={styles.title}>Заявка на пробный урок</h2>
         <p className={styles.lead}>
-          Выберите формат, предметы и удобное время — текст заявки соберётся автоматически и
-          откроется в WhatsApp.
+          Выберите формат и предметы, укажите, когда вам удобно принять звонок — заявка соберётся
+          сама и откроется в WhatsApp.
         </p>
       </div>
 
       <fieldset className={styles.step}>
         <legend className={styles.legend}>
           <span className={styles.stepNumber}>1</span>
-          Формат и время
+          Формат обучения
         </legend>
 
         <div className={styles.formats}>
@@ -267,17 +302,59 @@ export const EnrollForm = () => {
                 name="format"
                 value={option.id}
                 checked={formatId === option.id}
-                onChange={() => setFormatId(option.id)}
+                onChange={() => handleFormatChange(option.id)}
               />
               <span className={styles.formatLabel}>{option.label}</span>
               <span className={styles.formatHint}>{option.hint}</span>
             </label>
           ))}
         </div>
+      </fieldset>
+
+      <fieldset className={styles.step}>
+        <legend className={styles.legend}>
+          <span className={styles.stepNumber}>2</span>
+          Предметы
+        </legend>
+
+        <div className={styles.subjects} ref={subjectsRef}>
+          {availableSubjects.map((subject) => {
+            const checked = subjectIds.includes(subject.id)
+
+            return (
+              <label key={subject.id} className={cx(styles.subject, checked && styles.active)}>
+                <input
+                  type="checkbox"
+                  name="subject"
+                  value={subject.id}
+                  checked={checked}
+                  onChange={() => toggleSubject(subject.id)}
+                />
+                <span className={styles.box} aria-hidden="true">
+                  <CheckIcon />
+                </span>
+                <span className={styles.subjectLabel}>{subject.label}</span>
+              </label>
+            )
+          })}
+        </div>
+
+        {errors.subjects && (
+          <span className={styles.error} role="alert">
+            {errors.subjects}
+          </span>
+        )}
+      </fieldset>
+
+      <fieldset className={styles.step}>
+        <legend className={styles.legend}>
+          <span className={styles.stepNumber}>3</span>
+          Когда вам позвонить
+        </legend>
 
         <div className={styles.grid}>
           <label className={styles.field}>
-            <span className={styles.fieldLabel}>Удобный день</span>
+            <span className={styles.fieldLabel}>День</span>
             <input
               ref={dateRef}
               className={styles.input}
@@ -297,27 +374,27 @@ export const EnrollForm = () => {
           </label>
 
           <label className={styles.field}>
-            <span className={styles.fieldLabel}>Удобное время</span>
+            <span className={styles.fieldLabel}>Время звонка</span>
             <select
-              ref={timeRef}
+              ref={callSlotRef}
               className={styles.select}
-              name="time"
-              value={time}
-              aria-invalid={Boolean(errors.time)}
-              onChange={handleTimeChange}
+              name="callSlot"
+              value={callSlot}
+              aria-invalid={Boolean(errors.callSlot)}
+              onChange={handleCallSlotChange}
             >
               <option value="" disabled>
                 Выберите время
               </option>
-              {TIME_SLOTS.map((slot) => (
+              {CALL_SLOTS.map((slot) => (
                 <option key={slot} value={slot}>
                   {slot}
                 </option>
               ))}
             </select>
-            {errors.time && (
+            {errors.callSlot && (
               <span className={styles.error} role="alert">
-                {errors.time}
+                {errors.callSlot}
               </span>
             )}
           </label>
@@ -326,48 +403,7 @@ export const EnrollForm = () => {
 
       <fieldset className={styles.step}>
         <legend className={styles.legend}>
-          <span className={styles.stepNumber}>2</span>
-          Предметы ОРТ
-        </legend>
-
-        <div className={styles.subjects}>
-          {SUBJECTS.map((subject) => {
-            const checked = subjectIds.includes(subject.id)
-
-            return (
-              <label
-                key={subject.id}
-                className={cx(
-                  styles.subject,
-                  checked && styles.active,
-                  subject.required && styles.locked,
-                )}
-              >
-                <input
-                  type="checkbox"
-                  checked={checked}
-                  disabled={subject.required}
-                  onChange={() => toggleSubject(subject.id)}
-                />
-                <span className={styles.box} aria-hidden="true">
-                  <CheckIcon />
-                </span>
-                <span className={styles.subjectText}>
-                  <span className={styles.subjectLabel}>
-                    {subject.label}
-                    {subject.required && <span className={styles.tag}>Обязательно</span>}
-                  </span>
-                  {subject.hint && <span className={styles.subjectHint}>{subject.hint}</span>}
-                </span>
-              </label>
-            )
-          })}
-        </div>
-      </fieldset>
-
-      <fieldset className={styles.step}>
-        <legend className={styles.legend}>
-          <span className={styles.stepNumber}>3</span>
+          <span className={styles.stepNumber}>4</span>
           Контакты
         </legend>
 

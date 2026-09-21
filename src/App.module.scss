@@ -48,22 +48,15 @@
   .logo {
     display: inline-flex;
     align-items: center;
-    gap: 10px;
-    color: var(--ink);
-    font-size: 15px;
-    font-weight: 700;
-    text-decoration: none;
-  }
 
-  .logoMark {
-    display: grid;
-    place-items: center;
-    padding: 6px 10px;
-    border-radius: var(--radius-sm);
-    background: linear-gradient(135deg, var(--brand) 0%, var(--accent) 100%);
-    color: #fff;
-    font-size: 13px;
-    letter-spacing: 0.04em;
+    img {
+      width: auto;
+      height: 40px;
+
+      @media (max-width: 560px) {
+        height: 32px;
+      }
+    }
   }
 
   .phone {

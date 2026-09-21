@@ -121,7 +121,7 @@
 
   .subject {
     display: flex;
-    align-items: flex-start;
+    align-items: center;
     gap: 11px;
     padding: 12px 14px;
     border: 1.5px solid var(--line);
@@ -151,21 +151,9 @@
       }
     }
 
-    &.locked {
-      cursor: default;
-
-      &:hover {
-        border-color: var(--brand);
-      }
-    }
-
     &:has(input:focus-visible) {
       outline: 3px solid rgb(var(--brand-rgb) / 0.35);
       outline-offset: 2px;
-    }
-
-    &:first-child {
-      grid-column: 1 / -1;
     }
   }
 
@@ -175,7 +163,6 @@
     place-items: center;
     width: 20px;
     height: 20px;
-    margin-top: 1px;
     border: 1.5px solid var(--line);
     border-radius: 6px;
     background: var(--surface);
@@ -183,35 +170,9 @@
     transition: background 0.18s ease, border-color 0.18s ease, color 0.18s ease;
   }
 
-  .subjectText {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-  }
-
   .subjectLabel {
-    display: flex;
-    align-items: center;
-    gap: 8px;
     font-size: 14.5px;
     font-weight: 600;
-  }
-
-  .tag {
-    padding: 2px 8px;
-    border-radius: var(--radius-pill);
-    background: var(--brand);
-    color: #fff;
-    font-size: 10.5px;
-    font-weight: 600;
-    letter-spacing: 0.02em;
-    text-transform: uppercase;
-  }
-
-  .subjectHint {
-    color: var(--ink-muted);
-    font-size: 12.5px;
-    line-height: 1.35;
   }
 
   .grid {

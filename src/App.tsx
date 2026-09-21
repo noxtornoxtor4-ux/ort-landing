@@ -1,6 +1,7 @@
 import { EnrollForm } from './components/EnrollForm/EnrollForm'
 import { Hero } from './components/Hero/Hero'
-import { CONTACTS } from './config/site'
+import { CENTER } from './config/site'
+import novaWordmark from './assets/nova-wordmark.png'
 import styles from './App.module.scss'
 
 const App = () => (
@@ -8,11 +9,10 @@ const App = () => (
     <header className={styles.header}>
       <div className={styles.container}>
         <a className={styles.logo} href="#top">
-          <span className={styles.logoMark}>ОРТ</span>
-          Центр подготовки
+          <img src={novaWordmark} alt={CENTER.name} width="645" height="215" />
         </a>
-        <a className={styles.phone} href={`tel:${CONTACTS.phoneLabel.replace(/\s/g, '')}`}>
-          {CONTACTS.phoneLabel}
+        <a className={styles.phone} href={`tel:${CENTER.phoneLabel.replace(/\s/g, '')}`}>
+          {CENTER.phoneLabel}
         </a>
       </div>
     </header>
@@ -26,8 +26,10 @@ const App = () => (
 
     <footer className={styles.footer}>
       <div className={styles.container}>
-        <span>© {new Date().getFullYear()} Центр подготовки к ОРТ, Бишкек</span>
-        <span>Заявки принимаются ежедневно с 9:00 до 20:00</span>
+        <span>
+          © {new Date().getFullYear()} {CENTER.legalName}, {CENTER.city}
+        </span>
+        <span>Офлайн в Караколе · Онлайн по всему Кыргызстану</span>
       </div>
     </footer>
   </div>
