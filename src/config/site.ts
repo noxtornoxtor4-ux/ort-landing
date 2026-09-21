@@ -4,7 +4,7 @@
  */
 
 /** Номер WhatsApp администратора: только цифры, с кодом страны, без «+» и пробелов. */
-export const WHATSAPP_PHONE = '996706161109'
+export const WHATSAPP_PHONE = '996776161109'
 
 export const CENTER = {
   name: 'NOVA',
@@ -12,7 +12,7 @@ export const CENTER = {
   legalName: '«НОВА» билим берүү мекемеси',
   city: 'Каракол',
   /** Отображаемый номер в шапке. */
-  phoneLabel: '+996 706 161 109',
+  phoneLabel: '+996 776 161 109',
 } as const
 
 export interface FormatOption {

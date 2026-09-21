@@ -8,7 +8,7 @@ export const Hero = () => (
     </p>
 
     <h1 className={styles.title}>
-      Подготовка к <span className={styles.accent}>ОРТ 2026–2027</span> в Караколе
+      Подготовка к <span className={styles.accent}>ОРТ 2026–2027</span> в Кыргызстане
     </h1>
 
     <p className={styles.subtitle}>
