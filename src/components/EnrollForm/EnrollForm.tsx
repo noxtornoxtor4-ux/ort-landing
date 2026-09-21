@@ -141,10 +141,15 @@ export const EnrollForm = () => {
   const clearError = (field: FieldName) =>
     setErrors((current) => (current[field] ? { ...current, [field]: undefined } : current))
 
-  /** Наборы предметов у форматов не пересекаются, поэтому выбор сбрасывается. */
+  /**
+   * Основные предметы есть в обоих форматах, поэтому отметки сохраняются.
+   * Отпадают только те, которых в новом формате нет: химия и биология при переходе в офлайн.
+   */
   const handleFormatChange = (nextFormatId: string) => {
+    const allowed = getSubjectsForFormat(nextFormatId)
+
     setFormatId(nextFormatId)
-    setSubjectIds([])
+    setSubjectIds((current) => current.filter((id) => allowed.some((item) => item.id === id)))
     clearError('subjects')
   }
 

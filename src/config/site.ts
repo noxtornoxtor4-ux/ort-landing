@@ -33,11 +33,11 @@ export interface SubjectOption {
   formats: readonly string[]
 }
 
-/** Офлайн в Караколе — основные предметы, онлайн — предметные тесты. */
+/** Основные предметы идут в обоих форматах, химия и биология — только онлайн. */
 export const SUBJECTS: readonly SubjectOption[] = [
-  { id: 'math', label: 'Математика', formats: ['offline'] },
-  { id: 'kyrgyz', label: 'Кыргызский язык', formats: ['offline'] },
-  { id: 'russian', label: 'Русский язык', formats: ['offline'] },
+  { id: 'math', label: 'Математика', formats: ['offline', 'online'] },
+  { id: 'kyrgyz', label: 'Кыргызский язык', formats: ['offline', 'online'] },
+  { id: 'russian', label: 'Русский язык', formats: ['offline', 'online'] },
   { id: 'chemistry', label: 'Химия', formats: ['online'] },
   { id: 'biology', label: 'Биология', formats: ['online'] },
 ] as const
