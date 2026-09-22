@@ -24,7 +24,7 @@ export interface EnrollRequest {
 export const buildRequestText = (request: EnrollRequest): string =>
   [
     `Здравствуйте! Меня зовут ${request.name}, я ${request.gradePhrase}.`,
-    `Хочу записаться на пробный урок по ОРТ в ${CENTER.name}.`,
+    `Хочу записаться на урок по ОРТ в ${CENTER.name}.`,
     '',
     '📌 Детали заявки:',
     `• Формат: ${request.format}`,

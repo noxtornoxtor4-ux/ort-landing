@@ -33,11 +33,14 @@ export interface SubjectOption {
   formats: readonly string[]
 }
 
-/** Основные предметы идут в обоих форматах, химия и биология — только онлайн. */
+/**
+ * Блоки — так центр называет группы по основным предметам. Они идут в обоих форматах,
+ * химия и биология — отдельные предметы и только онлайн.
+ */
 export const SUBJECTS: readonly SubjectOption[] = [
-  { id: 'math', label: 'Математика', formats: ['offline', 'online'] },
-  { id: 'kyrgyz', label: 'Кыргызский язык', formats: ['offline', 'online'] },
-  { id: 'russian', label: 'Русский язык', formats: ['offline', 'online'] },
+  { id: 'math', label: 'Блок математика', formats: ['offline', 'online'] },
+  { id: 'kyrgyz', label: 'Блок кыргызский язык', formats: ['offline', 'online'] },
+  { id: 'russian', label: 'Блок русский язык', formats: ['offline', 'online'] },
   { id: 'chemistry', label: 'Химия', formats: ['online'] },
   { id: 'biology', label: 'Биология', formats: ['online'] },
 ] as const

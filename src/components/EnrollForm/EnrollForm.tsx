@@ -283,7 +283,7 @@ export const EnrollForm = () => {
   return (
     <form className={styles.form} onSubmit={handleSubmit} noValidate>
       <div className={styles.head}>
-        <h2 className={styles.title}>Заявка на пробный урок</h2>
+        <h2 className={styles.title}>Заявка на урок</h2>
         <p className={styles.lead}>
           Выберите формат и предметы, укажите, когда вам удобно принять звонок — заявка соберётся
           сама и откроется в WhatsApp.
@@ -504,7 +504,7 @@ export const EnrollForm = () => {
         onClick={handleCtaClick}
       >
         <WhatsAppIcon size={22} />
-        Записаться на пробный урок в WhatsApp
+        Записаться на урок в WhatsApp
       </a>
 
       {sent ? (
