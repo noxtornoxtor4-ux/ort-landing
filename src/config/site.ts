@@ -38,7 +38,8 @@ export interface SubjectOption {
  * химия и биология — отдельные предметы и только онлайн.
  */
 export const SUBJECTS: readonly SubjectOption[] = [
-  { id: 'math', label: 'Блок математика', formats: ['offline', 'online'] },
+  { id: 'math-kg', label: 'Блок математика кыргызча', formats: ['offline', 'online'] },
+  { id: 'math-ru', label: 'Блок математика на русском', formats: ['offline', 'online'] },
   { id: 'kyrgyz', label: 'Блок кыргызский язык', formats: ['offline', 'online'] },
   { id: 'russian', label: 'Блок русский язык', formats: ['offline', 'online'] },
   { id: 'chemistry', label: 'Химия', formats: ['online'] },
